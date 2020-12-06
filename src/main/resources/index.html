@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lecture Viewer</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.min.js" integrity="sha512-Z8CqofpIcnJN80feS2uccz+pXWgZzeKxDsDNMD/dJ6997/LSRY+W4NmEt9acwR+Gt9OHN0kkI1CTianCwoqcjQ==" crossorigin="anonymous"></script>
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.entry.min.js" integrity="sha512-NJEHr6hlBM4MkVxJu+7FBk+pn7r+KD8rh+50DPglV/8T8I9ETqHJH0bO7NRPHaPszzYTxBWQztDfL6iJV6CQTw==" crossorigin="anonymous"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.min.js" integrity="sha512-lHibs5XrZL9hXP3Dhr/d2xJgPy91f2mhVAasrSbMkbmoTSm2Kz8DuSWszBLUg31v+BM6tSiHSqT72xwjaNvl0g==" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf_viewer.min.css" integrity="sha512-5cOE2Zw/F4SlIUHR/xLTyFLSAR0ezXsra+8azx47gJyQCilATjazEE2hLQmMY7xeAv/RxxZhs8w8zEL7dTsvnA==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf_viewer.css" integrity="sha512-CWsS97AlgjAjjwqi38kjboS8Kz0aU84/iahk4FUfjxFCeSGuyoDaQkIZvgjKZrVUDVA8Hx2Kl7JrS6rlH19z3A==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf_viewer.js" integrity="sha512-WBiA7Xu6uie6Tk2fqnQnXHWbDFrkzDMlUfALYEJI9/eQtQ4kHcO1AbZA9wGqQ48Nkx7EUs9dXSAvW50ZYIQq+A==" crossorigin="anonymous"></script>
+
+    <style>
+        #root {
+            display: grid;
+            grid-template-rows:400px 300px;
+            grid-template-columns:66% 34% ;
+        }
+
+        #pdf {
+            background: #333;
+            grid-column:1 / 1;
+            grid-row:1 / 3;
+        }
+
+        #video {
+            background: #666;
+            grid-column:2 / 2;
+            grid-row:1 / 1;
+        }
+
+        #chapters {
+            background: #999;
+            grid-column:2 / 2;
+            grid-row:2 / 2;
+        }
+
+        #pdf canvas { width: 100%}
+    </style>
+</head>
+<body>
+<script src="lecture-viewer.js"></script>
+<div id="root">
+    <div id="pdf">
+     <canvas id="the-canvas">
+     </canvas>
+    </div>
+    <div id="video">
+        <video id="player" style="width: 100%" controls>
+            <source src="big_buck_bunny.webm">
+        </video>
+    </div>
+    <div id="chapters"></div>
+</div>
+
+<script>
+    function loadPdfPage(page) {
+        var scale = 2;
+        var viewport = page.getViewport({ scale: scale, });
+        var canvas = document.getElementById('the-canvas');
+        var context = canvas.getContext('2d');
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        var renderContext = {
+            canvasContext: context,
+            viewport: viewport
+        };
+        page.render(renderContext);
+    }
+
+    let PDF = undefined;
+
+    var loadingTask = pdfjsLib.getDocument('test.pdf');
+    loadingTask.promise.then(function(pdf) {
+        PDF = pdf;
+        pdf.getPage(1).then(function(page) {
+            loadPdfPage(page)
+        });
+    });
+</script>
+
+</body>
+</html>
