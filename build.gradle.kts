@@ -1,6 +1,7 @@
 plugins {
     kotlin("js") version "1.4.20"
-    id("net.akehurst.kotlin.kt2ts") version("1.4.0")
+    kotlin("plugin.serialization") version "1.4.10"
+//    id("net.akehurst.kotlin.kt2ts") version("1.4.0")
 }
 
 group = "me.weigl"
@@ -16,7 +17,7 @@ dependencies {
     testImplementation(kotlin("test-js"))
     implementation("org.jetbrains.kotlinx:kotlinx-html:0.7.2")
     implementation(npm("pdfjs-dist", "> 2.5.207"))
-
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
 }
 
 kotlin {
